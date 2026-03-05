@@ -1,0 +1,32 @@
+import bisect
+
+class Solution:
+    def avoidFlood(self, rains):
+
+        ans = [0] * len(rains)
+        full_lakes = {}  
+        dry_days = []      
+
+        for i, lake in enumerate(rains):
+
+            if lake == 0:
+                bisect.insort(dry_days, i)
+                ans[i] = 1           
+
+            else:
+                ans[i] = -1            
+
+                if lake in full_lakes:
+                    filled_on = full_lakes[lake]
+                    idx = bisect.bisect_right(dry_days, filled_on)
+
+                    if idx == len(dry_days):
+                        return []       
+
+                    dry_day = dry_days[idx]
+                    ans[dry_day] = lake 
+                    dry_days.pop(idx)  
+
+                full_lakes[lake] = i    
+
+        return ans
